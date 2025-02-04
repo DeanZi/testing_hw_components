@@ -1,5 +1,6 @@
 from gi import require_version
 import time
+
 require_version('Gst', '1.0')  # Specify version before importing
 from gi.repository import Gst
 import subprocess
@@ -13,33 +14,19 @@ def is_camera_available():
     return os.path.exists("/dev/video0")
 
 
-def get_camera_controls():
-    """Retrieve available camera controls."""
-    command = "v4l2-ctl --list-ctrls"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-
-    controls = {}
-    if result.returncode == 0:
-        for line in result.stdout.split("\n"):
-            match = re.match(r"\s*(\S+) \((\w+)\).*", line)
-            if match:
-                controls[match.group(1)] = match.group(2)  # e.g., {'brightness': 'int', 'contrast': 'int'}
-    return controls
-
-
 def set_camera_features(features):
-    """Set camera features dynamically, validating inputs first."""
+    """Validating inputs first."""
     VALID_FEATURES = {
         "brightness": (0, 100),  # Example range
         "contrast": (0, 100),
-        "frame_rate": (1, 60),
-        "white_balance": ["auto", "sunlight", "cloudy", "fluorescent", "incandescent"]
+        "backlight_compensation": (0, 1),
+        "sharness": (0, 100)
     }
 
     for key, value in features.items():
         if key not in VALID_FEATURES:
-            print(f"Warning: '{key}' is not a valid camera feature. Ignoring.")
-            continue  # Ignore invalid feature names
+            print(f"Error: '{key}' is not a valid camera feature. ")
+            False
 
         valid_range = VALID_FEATURES[key]
         if isinstance(valid_range, tuple):  # Numeric range

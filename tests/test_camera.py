@@ -27,7 +27,7 @@ class TestCamera(BaseTest):
         features = {
             "brightness": 50,
             "contrast": 50,
-            "white_balance": "auto",
+            "backlight_compensation": 1,
             "frame_rate": 30
         }
 
