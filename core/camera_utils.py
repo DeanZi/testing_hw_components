@@ -1,10 +1,11 @@
 from gi import require_version
+import time
 require_version('Gst', '1.0')  # Specify version before importing
 from gi.repository import Gst
 import subprocess
 import re
 import os
-import time
+import multiprocessing
 
 
 def is_camera_available():
@@ -106,3 +107,29 @@ def record_video(video_path, duration):
 
     # Check if the video file was created
     return os.path.exists(video_path)
+
+
+def cpu_intensive_task():
+    while True:
+        num = 2
+        while True:
+            num += 1
+            for i in range(2, num):
+                if num % i == 0:
+                    break
+            else:
+                pass  # Prime number found
+
+
+def simulate_high_cpu_load():
+    processes = []
+    for _ in range(multiprocessing.cpu_count()):  # Spawn one per CPU core
+        p = multiprocessing.Process(target=cpu_intensive_task)
+        p.start()
+        processes.append(p)
+
+    time.sleep(10)  # Simulate high CPU load for 10 seconds
+
+    # Terminate all processes
+    for p in processes:
+        p.terminate()
