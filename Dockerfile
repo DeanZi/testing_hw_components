@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
     gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
+    gobject-introspection \
+    cmake \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
