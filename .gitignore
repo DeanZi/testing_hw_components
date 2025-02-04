@@ -1,4 +1,4 @@
-core/__pycache__/
-tests/__pycache__/
+core/__pycache__/*
+tests/__pycache__/*
 *.jpg
 *.mp4
