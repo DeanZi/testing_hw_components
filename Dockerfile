@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     gstreamer1.0-libav \
     gobject-introspection \
     cmake \
+    gobject-introspection-1.0-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
