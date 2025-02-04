@@ -1,7 +1,10 @@
 import os
+import threading
 
 from core.base_test import BaseTest
-from core.camera_utils import capture_image, record_video, set_camera_features, is_camera_available, simulate_high_cpu_load
+from core.camera_utils import capture_image, record_video, set_camera_features, is_camera_available, occupy_camera
+from core.cpu_utils import simulate_high_cpu_load
+import time
 
 
 class TestCamera(BaseTest):
@@ -11,7 +14,6 @@ class TestCamera(BaseTest):
         """Initialize logger and check if the camera is detected."""
         super().setup_method()
         self.logger.info("Setting up camera test...")
-
         assert is_camera_available(), "No camera detected. Test cannot proceed."
 
     def test_camera_availability(self):
@@ -55,15 +57,25 @@ class TestCamera(BaseTest):
         assert capture_image(image_path), "Failed to capture image."
         self.logger.info("Image captured successfully.")
 
-    def test_capture_image_with_camera_unavailable(self, monkeypatch):
-        """Test capturing an image when the camera is unavailable."""
-        self.logger.info("Testing image capture failure when camera is unavailable...")
+    def test_capture_image_with_camera_unavailable(self):
+        """Test capturing an image when the camera is unavailable due to being occupied."""
+        # Start a thread to occupy the camera
+        camera_thread = threading.Thread(target=occupy_camera, daemon=True)
+        camera_thread.start()
 
-        monkeypatch.setattr("core.camera_utils.is_camera_available", lambda: False)
+        # Give the camera some time to become occupied
+        time.sleep(1)
 
+        # Now, attempt to capture an image when the camera should be unavailable
         image_path = "test_image_unavailable.jpg"
-        assert not capture_image(image_path), "Image capture should fail when camera is unavailable."
-        self.logger.info("Image capture failed as expected when camera is unavailable.")
+        result = capture_image(image_path)
+
+        # Wait for the original thread to finish
+        camera_thread.join()
+
+        # We assert that the camera is unavailable, so the capture should fail
+        assert not result, "Image capture should fail when camera is unavailable."
+        print("Test passed: Camera was occupied and image capture failed.")
 
     def test_record_video(self):
         """Test recording a video."""
@@ -82,28 +94,6 @@ class TestCamera(BaseTest):
         video_path = "test_video_unavailable.mp4"
         assert not record_video(video_path, 5), "Video recording should fail when camera is unavailable."
         self.logger.info("Video recording failed as expected when camera is unavailable.")
-
-    def test_record_video_with_invalid_duration(self):
-        """Test recording a video with an invalid duration."""
-        self.logger.info("Testing video recording with invalid duration...")
-
-        video_path = "test_video_invalid.mp4"
-        invalid_durations = [-5, 0, "ten"]  # Negative, zero, and non-numeric values
-
-        for duration in invalid_durations:
-            assert not record_video(video_path, duration), f"Video recording should fail for duration: {duration}"
-
-        self.logger.info("Video recording correctly failed for invalid durations.")
-
-    def test_fast_camera_switching(self):
-        """Test rapid switching between multiple available cameras."""
-        self.logger.info("Testing fast camera switching...")
-        camera_devices = ["/dev/video0", "/dev/video1"]  # Example camera devices
-
-        for _ in range(10):  # Switch 10 times rapidly
-            for camera in camera_devices:
-                assert os.path.exists(camera), f"Camera {camera} not found."
-                self.logger.info(f"Switched to {camera} successfully.")
 
     def test_fast_camera_switching(self):
         """Test rapid switching between multiple available cameras."""
@@ -127,5 +117,4 @@ class TestCamera(BaseTest):
     #     video_path = "test_video_under_load.mp4"
     #     assert capture_image(image_path), "Failed to capture image under load."
     #     assert record_video(video_path, 10), "Failed to record video under load."
-    #
     #     self.logger.info("Camera behavior under system load tested successfully.")

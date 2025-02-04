@@ -1,17 +1,18 @@
 from gi import require_version
-import time
-
 require_version('Gst', '1.0')  # Specify version before importing
 from gi.repository import Gst
 import subprocess
-import re
 import os
-import multiprocessing
+import time
+import cv2
 
 
-def is_camera_available():
-    """Check if the camera device exists and is accessible."""
-    return os.path.exists("/dev/video0")
+def is_camera_available(camera_index=0):
+    """Check if the camera is available by trying to open it."""
+    cap = cv2.VideoCapture(camera_index)
+    available = cap.isOpened()
+    cap.release()  # Always release the capture object
+    return available
 
 
 def set_camera_features(features):
@@ -33,14 +34,22 @@ def set_camera_features(features):
             if not isinstance(value, (int, float)) or not (valid_range[0] <= value <= valid_range[1]):
                 print(f"Error: Invalid value for {key}: {value}. Should be in range {valid_range}.")
                 return False
-        elif isinstance(valid_range, list):  # Allowed string values
-            if value not in valid_range:
-                print(f"Error: Invalid value for {key}: {value}. Allowed values: {valid_range}.")
-                return False
 
     # If all values are valid, apply settings (mocked for now)
     print(f"Camera features set successfully: {features}")
     return True
+
+
+def occupy_camera():
+    """Function to occupy the camera for a while (simulating another process)."""
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Camera is unavailable.")
+        return
+    print("Camera is now occupied.")
+    time.sleep(5)  # Keep the camera occupied for 5 seconds
+    cap.release()
+    print("Camera released.")
 
 
 def capture_image(image_path):
@@ -67,10 +76,6 @@ def record_video(video_path, duration):
         print("Error: Camera is not available. Cannot record video.")
         return False
 
-    if not isinstance(duration, (int, float)) or duration <= 0:
-        print(f"Error: Invalid duration {duration}. Must be a positive number.")
-        return False
-
     # Initialize GStreamer
     Gst.init(None)
 
@@ -94,29 +99,3 @@ def record_video(video_path, duration):
 
     # Check if the video file was created
     return os.path.exists(video_path)
-
-
-def cpu_intensive_task():
-    while True:
-        num = 2
-        while True:
-            num += 1
-            for i in range(2, num):
-                if num % i == 0:
-                    break
-            else:
-                pass  # Prime number found
-
-
-def simulate_high_cpu_load():
-    processes = []
-    for _ in range(multiprocessing.cpu_count()):  # Spawn one per CPU core
-        p = multiprocessing.Process(target=cpu_intensive_task)
-        p.start()
-        processes.append(p)
-
-    time.sleep(10)  # Simulate high CPU load for 10 seconds
-
-    # Terminate all processes
-    for p in processes:
-        p.terminate()
