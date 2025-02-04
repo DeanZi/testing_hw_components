@@ -1,11 +1,13 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8
+# Use debian based image
+FROM debian:bullseye-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
     fswebcam \
     gstreamer1.0-tools \
     gstreamer1.0-plugins-base \
@@ -13,9 +15,7 @@ RUN apt-get update && apt-get install -y \
     gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
-    gobject-introspection \
     cmake \
-    gobject-introspection-1.0-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file into the container
