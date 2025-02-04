@@ -1,2 +1,1 @@
 opencv-python  # For cv2
-PyGObject  # For gi and gi.repository
