@@ -20,7 +20,7 @@ def set_camera_features(features):
         "brightness": (0, 100),  # Example range
         "contrast": (0, 100),
         "backlight_compensation": (0, 1),
-        "sharness": (0, 100)
+        "sharpness": (0, 100)
     }
 
     for key, value in features.items():

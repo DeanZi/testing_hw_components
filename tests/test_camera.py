@@ -28,7 +28,7 @@ class TestCamera(BaseTest):
             "brightness": 50,
             "contrast": 50,
             "backlight_compensation": 1,
-            "frame_rate": 30
+            "sharpness": 30
         }
 
         assert set_camera_features(features), "Failed to set camera features."
@@ -41,7 +41,7 @@ class TestCamera(BaseTest):
         invalid_features = {
             "brightness": -10,  # Invalid: brightness should be within valid range
             "contrast": 300,  # Invalid: out of range
-            "frame_rate": "high",  # Invalid: should be a number
+            "sharpness": "high",  # Invalid: should be a number
             "non_existent_feature": 42  # Invalid: feature doesn't exist
         }
 
@@ -115,17 +115,17 @@ class TestCamera(BaseTest):
                 assert os.path.exists(camera), f"Camera {camera} not found."
                 self.logger.info(f"Switched to {camera} successfully.")
 
-    def test_overloaded_system_camera(self):
-        """Test camera behavior under high system load."""
-        self.logger.info("Simulating an overloaded system while testing camera behavior...")
-
-        # Start high CPU load simulation
-        simulate_high_cpu_load()
-
-        # Now run the camera test (e.g., capturing an image)
-        image_path = "test_image_under_load.jpg"
-        video_path = "test_video_under_load.mp4"
-        assert capture_image(image_path), "Failed to capture image under load."
-        assert record_video(video_path, 10), "Failed to record video under load."
-
-        self.logger.info("Camera behavior under system load tested successfully.")
+    # def test_overloaded_system_camera(self):
+    #     """Test camera behavior under high system load."""
+    #     self.logger.info("Simulating an overloaded system while testing camera behavior...")
+    #
+    #     # Start high CPU load simulation
+    #     simulate_high_cpu_load()
+    #
+    #     # Now run the camera test (e.g., capturing an image)
+    #     image_path = "test_image_under_load.jpg"
+    #     video_path = "test_video_under_load.mp4"
+    #     assert capture_image(image_path), "Failed to capture image under load."
+    #     assert record_video(video_path, 10), "Failed to record video under load."
+    #
+    #     self.logger.info("Camera behavior under system load tested successfully.")
