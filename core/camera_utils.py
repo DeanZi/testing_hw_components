@@ -1,24 +1,33 @@
+import glob
 from gi import require_version
+
 require_version('Gst', '1.0')  # Specify version before importing
 from gi.repository import Gst
-import subprocess
 import os
-import time
 import cv2
+import subprocess
+import time
+
+
+def get_available_cameras():
+    """Detect available camera devices dynamically."""
+    return glob.glob("/dev/video*")  # Lists all video devices
 
 
 def is_camera_available(camera_index=0):
     """Check if the camera is available by trying to open it."""
     cap = cv2.VideoCapture(camera_index)
     available = cap.isOpened()
-    cap.release()  # Always release the capture object
+    cap.release()  # release the capture object
     return available
 
 
 def set_camera_features(features):
     """Validating inputs first."""
+
+    # Assuming these are the valid inputs
     VALID_FEATURES = {
-        "brightness": (0, 100),  # Example range
+        "brightness": (0, 100),
         "contrast": (0, 100),
         "backlight_compensation": (0, 1),
         "sharpness": (0, 100)
@@ -27,7 +36,7 @@ def set_camera_features(features):
     for key, value in features.items():
         if key not in VALID_FEATURES:
             print(f"Error: '{key}' is not a valid camera feature. ")
-            False
+            return False
 
         valid_range = VALID_FEATURES[key]
         if isinstance(valid_range, tuple):  # Numeric range
@@ -35,34 +44,33 @@ def set_camera_features(features):
                 print(f"Error: Invalid value for {key}: {value}. Should be in range {valid_range}.")
                 return False
 
-    # If all values are valid, apply settings (mocked for now)
-    print(f"Camera features set successfully: {features}")
+    # If all values are valid, apply settings
     return True
 
 
 def occupy_camera():
     """Function to occupy the camera for a while (simulating another process)."""
     cap = cv2.VideoCapture(0)
+    # Camera is occupied already
     if not cap.isOpened():
-        print("Error: Camera is unavailable.")
-        return
-    print("Camera is now occupied.")
+        return False
     time.sleep(5)  # Keep the camera occupied for 5 seconds
+    # Release the camera back again
     cap.release()
-    print("Camera released.")
+    return True
 
 
 def capture_image(image_path):
     """Capture an image only if the camera is available."""
     if not is_camera_available():
-        print("Error: Camera is not available. Cannot capture image.")
         return False
-
+    # Running the fswebcam bash cmd
     result = subprocess.run(
         ["fswebcam", "--no-banner", image_path],
         capture_output=True, text=True
     )
 
+    # Error while capturing
     if result.returncode != 0:
         print(f"Error capturing image: {result.stderr}")
         return False

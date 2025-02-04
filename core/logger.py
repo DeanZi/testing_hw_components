@@ -1,6 +1,5 @@
 import logging
 
-
 def setup_logger(logger):
     """Configure logging format and output."""
     handler = logging.FileHandler("test_logs.log")
