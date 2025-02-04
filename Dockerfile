@@ -17,7 +17,6 @@ RUN apt-get update && apt-get install -y \
     gstreamer1.0-libav \
     pkg-config \
     libcairo2-dev \
-    gobject-introspection-1.0-dev \
     cmake \
     && rm -rf /var/lib/apt/lists/*
 
