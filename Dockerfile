@@ -9,12 +9,14 @@ RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
     fswebcam \
+    gstreamer1.0 \
     gstreamer1.0-tools \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
     gstreamer1.0-plugins-bad \
     gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
+    libgirepository1.0-dev \
     pkg-config \
     libcairo2-dev \
     cmake \
@@ -22,6 +24,9 @@ RUN apt-get update && apt-get install -y \
 
 # Copy the requirements file into the container
 COPY requirements.txt .
+
+# PyObject Install
+RUN pip install PyObject
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt

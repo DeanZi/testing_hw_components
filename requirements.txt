@@ -1,1 +1,2 @@
 opencv-python  # For cv2
+pytest # Testing Framework
