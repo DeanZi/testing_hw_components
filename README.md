@@ -5,7 +5,7 @@ This project is an assignment focused on testing hardware components, starting w
 
 ## High-Level Design
 The design follows a modular and extensible structure. The test framework is built using `pytest`, and logging is integrated to track the execution of tests. The camera component tests include availability checks, feature adjustments, image capture, and video recording, with additional robustness tests under system stress and high CPU load.
-See [High-Level Design Document](High-Level Design Document.pdf).
+See [High-Level Design Document](https://github.com/DeanZi/testing_hw_components/blob/main/High-Level%20Design%20Document.pdf.)
 
 ## Important Files
 
