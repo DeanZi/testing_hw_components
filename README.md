@@ -24,6 +24,18 @@ See [High-Level Design Document](https://github.com/DeanZi/testing_hw_components
   - Setting camera features
   - Occupying the camera for concurrency tests
   - Capturing images and recording videos
+  
+### `cpu_utils.py`
+
+- Simulates high CPU load for stress testing:
+
+  - Utilizes multiprocessing to spawn processes running CPU-intensive tasks
+
+  - Each process continuously searches for prime numbers to generate CPU load
+
+  - Runs for a set duration before terminating all spawned processes
+  
+
 
 ## Test Framework
 - The project uses the `pytest` framework for testing.
@@ -46,6 +58,11 @@ docker build --network=host -t pytest_camera_project .
 ```bash
 docker run --rm pytest_camera_project
 ```
+
+## System Requirements
+
+- The test is best run on Ubuntu 20.04 (real machine, not VM) since it attempts to detect a camera. Running in a VM will raise an error: `"No camera detected. Test cannot proceed."`
+
 
 ## Future Enhancements
 - Extend support for other hardware components (e.g., microphone, sensors, GPU)
