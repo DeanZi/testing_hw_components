@@ -38,6 +38,10 @@ See [High-Level Design Document](https://github.com/DeanZi/testing_hw_components
 - The project uses the `pytest` framework for testing.
 - Logging is implemented to track test execution and failures.
 
+## System Requirements
+- The test is best run on Ubuntu 20.04 (real machine, not VM) since it attempts to detect a camera. Running in a VM will raise an error: `"No camera detected. Test cannot proceed."`
+
+
 ## Setup Instructions
 
 ### 1. Clone the Repository
@@ -55,11 +59,6 @@ docker build --network=host -t pytest_camera_project .
 ```bash
 docker run --rm pytest_camera_project
 ```
-
-## System Requirements
-
-- The test is best run on Ubuntu 20.04 (real machine, not VM) since it attempts to detect a camera. Running in a VM will raise an error: `"No camera detected. Test cannot proceed."`
-
 
 ## Future Enhancements
 - Extend support for other hardware components (e.g., microphone, sensors, GPU)
