@@ -28,11 +28,8 @@ See [High-Level Design Document](https://github.com/DeanZi/testing_hw_components
 ### `cpu_utils.py`
 
 - Simulates high CPU load for stress testing:
-
   - Utilizes multiprocessing to spawn processes running CPU-intensive tasks
-
   - Each process continuously searches for prime numbers to generate CPU load
-
   - Runs for a set duration before terminating all spawned processes
   
 
