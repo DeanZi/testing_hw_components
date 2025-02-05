@@ -25,11 +25,11 @@ RUN apt-get update && apt-get install -y \
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# PyObject Install
-RUN pip install PyObject
-
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# PyObject Install
+RUN pip install PyGObject
 
 # Copy the rest of the project files
 COPY . .
